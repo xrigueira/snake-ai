@@ -1,10 +1,8 @@
-from cgitb import reset
-from re import I
 import pygame
 import random
+import numpy as np
 from enum import Enum
 from collections import namedtuple
-import numpy as np
 
 # Initiate
 pygame.init()
@@ -16,8 +14,6 @@ class Direction(Enum):
     UP = 3
     DOWN = 4
 
-
-
 Point = namedtuple('Point', 'x, y')
 
 # Define RGB colors
@@ -28,9 +24,9 @@ BLUE2 = (0, 100, 255)
 BLACK = (0, 0, 0)
 
 BLOCK_SIZE = 20
-SPEED = 20
+SPEED = 80
 
-class SnakeGameRL:
+class SnakeGame:
     
     def __init__(self, w=640, h=480):
         
@@ -41,7 +37,7 @@ class SnakeGameRL:
         self.display = pygame.display.set_mode((self.w, self.h))
         pygame.display.set_caption('Snake')
         self.clock = pygame.time.Clock()
-        self.reset = reset()
+        self.reset()
     
     def reset(self):
         
@@ -85,7 +81,7 @@ class SnakeGameRL:
         reward = 0
         game_over = False
         
-        if self._is_collision() or self.frame_iteration > 100*len(self.snake):
+        if self.is_collision() or self.frame_iteration > 100*len(self.snake):
             
             game_over = True
             reward = -10
@@ -109,7 +105,7 @@ class SnakeGameRL:
         # Sixth, return game over and score
         return game_over, reward, self.score
     
-    def _is_collision(self):
+    def is_collision(self, pt=None):
         
         if pt is None:
             
